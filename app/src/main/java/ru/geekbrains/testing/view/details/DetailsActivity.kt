@@ -12,7 +12,7 @@ import java.util.*
 
 class DetailsActivity : AppCompatActivity(), ViewDetailsContract {
 
-    private val presenter: PresenterDetailsContract = DetailsPresenter(this)
+    private val presenter: PresenterDetailsContract = DetailsPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,5 +46,14 @@ class DetailsActivity : AppCompatActivity(), ViewDetailsContract {
                 putExtra(TOTAL_COUNT_EXTRA, totalCount)
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttach(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.onDetach()
     }
 }

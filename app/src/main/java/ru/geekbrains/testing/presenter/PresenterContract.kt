@@ -1,3 +1,8 @@
 package ru.geekbrains.testing.presenter
 
-internal interface PresenterContract {}
+import ru.geekbrains.testing.view.ViewContract
+
+internal interface PresenterContract {
+    fun onAttach(viewContract: ViewContract)
+    fun onDetach()
+}
