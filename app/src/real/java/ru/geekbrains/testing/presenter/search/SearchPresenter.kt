@@ -1,18 +1,18 @@
 package ru.geekbrains.testing.presenter.search
 
 import androidx.annotation.VisibleForTesting
-import ru.geekbrains.testing.presenter.search.PresenterSearchContract
 import retrofit2.Response
 import ru.geekbrains.testing.model.SearchResponse
-import ru.geekbrains.testing.repository.GitHubRepository
+import ru.geekbrains.testing.repository.RepositoryCallback
+import ru.geekbrains.testing.repository.RepositoryContract
 import ru.geekbrains.testing.view.ViewContract
 import ru.geekbrains.testing.view.search.ViewSearchContract
 
 
 internal class SearchPresenter internal constructor(
-    private val repository: GitHubRepository,
+    private val repository: RepositoryContract,
     private var viewContract: ViewSearchContract? = null
-) : PresenterSearchContract, GitHubRepository.GitHubRepositoryCallback {
+) : PresenterSearchContract, RepositoryCallback {
 
     @VisibleForTesting
     fun getViewContract(): ViewContract? { return viewContract }
