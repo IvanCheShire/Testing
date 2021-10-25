@@ -6,23 +6,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_details.*
+import kotlinx.android.synthetic.main.activity_main.*
 import ru.geekbrains.testing.R
 import ru.geekbrains.testing.model.SearchResult
 import ru.geekbrains.testing.presenter.search.PresenterSearchContract
 import ru.geekbrains.testing.presenter.search.SearchPresenter
-import ru.geekbrains.testing.repository.GitHubApi
 import ru.geekbrains.testing.repository.GitHubRepository
-import ru.geekbrains.testing.view.details.DetailsActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import ru.geekbrains.testing.repository.RepositoryContract
+import ru.geekbrains.testing.view.details.DetailsActivity
+import java.util.*
 
 class MainActivity : AppCompatActivity(), ViewSearchContract {
-
-    companion object {
-        const val BASE_URL = "https://api.github.com"
-    }
 
     private val adapter = SearchResultAdapter()
     private val presenter: PresenterSearchContract = SearchPresenter(createRepository())
@@ -33,6 +28,7 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         setContentView(R.layout.activity_main)
         setUI()
     }
+
     private fun setUI() {
         toDetailsActivityButton.setOnClickListener {
             startActivity(DetailsActivity.getIntent(this, totalCount))
@@ -43,10 +39,12 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         setQueryListener()
         setRecyclerView()
     }
+
     private fun setRecyclerView() {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
     }
+
     private fun setQueryListener() {
         searchEditText.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -73,15 +71,9 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
     }
 
     private fun createRepository(): RepositoryContract {
-        return GitHubRepository(createRetrofit().create(GitHubApi::class.java))
+        return GitHubRepository()
     }
 
-    private fun createRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
     override fun displaySearchResults(
         searchResults: List<SearchResult>,
         totalCount: Int
@@ -93,12 +85,15 @@ class MainActivity : AppCompatActivity(), ViewSearchContract {
         this.totalCount = totalCount
         adapter.updateResults(searchResults)
     }
+
     override fun displayError() {
         Toast.makeText(this, getString(R.string.undefined_error), Toast.LENGTH_SHORT).show()
     }
+
     override fun displayError(error: String) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
+
     override fun displayLoading(show: Boolean) {
         if (show) {
             progressBar.visibility = View.VISIBLE
